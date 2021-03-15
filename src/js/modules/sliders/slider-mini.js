@@ -32,29 +32,17 @@ export default class MiniSlider extends Slider {
     nextSlide() {
         this.container.appendChild(this.slides[0]);
 
-            for (let i = this.slides.length - 1; i > 0; i--) {
-                if (this.slides[i].tagName === "BUTTON") {
-                    this.container.appendChild(this.slides[i]);
-                }
+        for (let i = this.slides.length - 1; i > 0; i--) {
+            if (this.slides[i].tagName === "BUTTON") {
+                this.container.appendChild(this.slides[i]);
             }
-            this.decorizeSlides();
+        }
+        this.decorizeSlides();
     }
-
 
     bindTriggers() {
 
-        this.next.addEventListener('click', () => this.nextSlide());   
-
-            // this.container.appendChild(this.slides[0]);
-
-            // for (let i = this.slides.length - 1; i > 0; i--) {
-            //     if (this.slides[i].tagName === "BUTTON") {
-            //         this.container.appendChild(this.slides[i]);
-            //     }
-            // }
-            // this.decorizeSlides();
-
-
+        this.next.addEventListener('click', () => this.nextSlide());
 
         this.prev.addEventListener('click', () => {
 
@@ -72,18 +60,20 @@ export default class MiniSlider extends Slider {
 
 
     init() {
-        this.container.style.cssText = `
+        try {
+            this.container.style.cssText = `
             display: flex;
             flex-wrap: wrap;
             overflow: hidden;
             align-items: flex-start;
         `;
 
-        this.bindTriggers();
-        this.decorizeSlides();
-        
-        if (this.autoplay) {
-            setInterval(() => this.nextSlide(), 5000);
-        }
+            this.bindTriggers();
+            this.decorizeSlides();
+
+            if (this.autoplay) {
+                setInterval(() => this.nextSlide(), 5000);
+            }
+        } catch (e) {}
     }
 }
