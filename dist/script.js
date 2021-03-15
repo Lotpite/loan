@@ -2785,7 +2785,8 @@ window.addEventListener('DOMContentLoaded', function () {
     prev: '.modules__info-btns .slick-prev',
     next: '.modules__info-btns .slick-next',
     activeClass: 'card-active',
-    animate: true
+    animate: true,
+    autoplay: true
   });
   modulesSlider.init();
   var feedSlider = new _modules_sliders_slider_mini__WEBPACK_IMPORTED_MODULE_1__["default"]({
@@ -3178,24 +3179,33 @@ function (_Slider) {
       }
     }
   }, {
-    key: "createArray",
-    value: function createArray() {}
+    key: "nextSlide",
+    value: function nextSlide() {
+      this.container.appendChild(this.slides[0]);
+
+      for (var i = this.slides.length - 1; i > 0; i--) {
+        if (this.slides[i].tagName === "BUTTON") {
+          this.container.appendChild(this.slides[i]);
+        }
+      }
+
+      this.decorizeSlides();
+    }
   }, {
     key: "bindTriggers",
     value: function bindTriggers() {
       var _this3 = this;
 
       this.next.addEventListener('click', function () {
-        _this3.container.appendChild(_this3.slides[0]);
+        return _this3.nextSlide();
+      }); // this.container.appendChild(this.slides[0]);
+      // for (let i = this.slides.length - 1; i > 0; i--) {
+      //     if (this.slides[i].tagName === "BUTTON") {
+      //         this.container.appendChild(this.slides[i]);
+      //     }
+      // }
+      // this.decorizeSlides();
 
-        for (var i = _this3.slides.length - 1; i > 0; i--) {
-          if (_this3.slides[i].tagName === "BUTTON") {
-            _this3.container.appendChild(_this3.slides[i]);
-          }
-        }
-
-        _this3.decorizeSlides();
-      });
       this.prev.addEventListener('click', function () {
         for (var i = _this3.slides.length - 1; i > 0; i--) {
           if (_this3.slides[i].tagName !== "BUTTON") {
@@ -3214,9 +3224,17 @@ function (_Slider) {
   }, {
     key: "init",
     value: function init() {
+      var _this4 = this;
+
       this.container.style.cssText = "\n            display: flex;\n            flex-wrap: wrap;\n            overflow: hidden;\n            align-items: flex-start;\n        ";
       this.bindTriggers();
       this.decorizeSlides();
+
+      if (this.autoplay) {
+        setInterval(function () {
+          return _this4.nextSlide();
+        }, 5000);
+      }
     }
   }]);
 

@@ -29,14 +29,8 @@ export default class MiniSlider extends Slider {
         }
     }
 
-    createArray() {}
-
-
-    bindTriggers() {
-
-        this.next.addEventListener('click', () => {
-
-            this.container.appendChild(this.slides[0]);
+    nextSlide() {
+        this.container.appendChild(this.slides[0]);
 
             for (let i = this.slides.length - 1; i > 0; i--) {
                 if (this.slides[i].tagName === "BUTTON") {
@@ -44,7 +38,21 @@ export default class MiniSlider extends Slider {
                 }
             }
             this.decorizeSlides();
-        });
+    }
+
+
+    bindTriggers() {
+
+        this.next.addEventListener('click', () => this.nextSlide());   
+
+            // this.container.appendChild(this.slides[0]);
+
+            // for (let i = this.slides.length - 1; i > 0; i--) {
+            //     if (this.slides[i].tagName === "BUTTON") {
+            //         this.container.appendChild(this.slides[i]);
+            //     }
+            // }
+            // this.decorizeSlides();
 
 
 
@@ -73,5 +81,9 @@ export default class MiniSlider extends Slider {
 
         this.bindTriggers();
         this.decorizeSlides();
+        
+        if (this.autoplay) {
+            setInterval(() => this.nextSlide(), 5000);
+        }
     }
 }
