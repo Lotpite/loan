@@ -2763,6 +2763,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_sliders_slider_main__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/sliders/slider-main */ "./src/js/modules/sliders/slider-main.js");
 /* harmony import */ var _modules_sliders_slider_mini__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/sliders/slider-mini */ "./src/js/modules/sliders/slider-mini.js");
 /* harmony import */ var _modules_playVideo__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/playVideo */ "./src/js/modules/playVideo.js");
+/* harmony import */ var _modules_difference__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/difference */ "./src/js/modules/difference.js");
+
 
 
 
@@ -2798,7 +2800,85 @@ window.addEventListener('DOMContentLoaded', function () {
   feedSlider.init();
   var player = new _modules_playVideo__WEBPACK_IMPORTED_MODULE_2__["default"]('.showup .play', '.overlay');
   player.init();
+  var officer = new _modules_difference__WEBPACK_IMPORTED_MODULE_3__["default"]('.officerold', '.officernew', '.officer__card-item');
+  officer.init();
 });
+
+/***/ }),
+
+/***/ "./src/js/modules/difference.js":
+/*!**************************************!*\
+  !*** ./src/js/modules/difference.js ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Difference; });
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom-collections.for-each */ "./node_modules/core-js/modules/web.dom-collections.for-each.js");
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Difference =
+/*#__PURE__*/
+function () {
+  function Difference(oldOficer, newOficer, items) {
+    _classCallCheck(this, Difference);
+
+    this.oldOficer = document.querySelector(oldOficer);
+    this.newOficer = document.querySelector(newOficer);
+    this.oldItems = this.oldOficer.querySelectorAll(items);
+    this.newItems = this.newOficer.querySelectorAll(items);
+    this.oldCounter = 0;
+    this.newCounter = 0;
+  }
+
+  _createClass(Difference, [{
+    key: "hideItems",
+    value: function hideItems(items) {
+      items.forEach(function (item, i, arr) {
+        if (i < arr.length - 1) {
+          item.classList.add('animated');
+          item.style.display = 'none';
+        }
+      });
+    }
+  }, {
+    key: "bindTriggers",
+    value: function bindTriggers(container, items, counter) {
+      container.querySelector('.plus').addEventListener('click', function () {
+        if (counter !== items.length - 2) {
+          items[counter].style.display = 'flex';
+          items[counter].classList.add('fadeIn');
+          counter++;
+        } else {
+          items[counter].style.display = 'flex';
+          items[counter].classList.add('fadeIn');
+          items[counter + 1].remove();
+        }
+      });
+    }
+  }, {
+    key: "init",
+    value: function init() {
+      this.hideItems(this.oldItems);
+      this.hideItems(this.newItems);
+      this.bindTriggers(this.oldOficer, this.oldItems, this.oldCounter);
+      this.bindTriggers(this.newOficer, this.newItems, this.newCounter);
+    }
+  }]);
+
+  return Difference;
+}();
+
+
 
 /***/ }),
 
