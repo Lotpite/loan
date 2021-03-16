@@ -3,20 +3,56 @@ export default class VideoPlayer {
         this.btns = document.querySelectorAll(triggers);
         this.overlay = document.querySelector(overlay);
         this.close = this.overlay.querySelector('.close');
+        this.onPlayerStateChange = this.onPlayerStateChange.bind(this);
     }
 
     bindTriggers() {
-        this.btns.forEach(btn => {
+        this.btns.forEach((btn, i) => {
+            const blockedElem = btn.parentNode.nextElementSibling; // МОЖНО ИСПОЛЬЗОВАТЬ Closest!!!
+            if (blockedElem) {
+                if (i % 2 == 0) {
+                    blockedElem.setAttribute('data-disabled', 'true');
+                }
+            }
+
             btn.addEventListener('click', () => {
-                if (document.querySelector('iframe#frame')) {
-                    this.overlay.style.display = "flex";
-                } else {
-                    const path = btn.getAttribute('data-url');
-                    console.log(path);
-                    this.createPlayer(path);
+                if (btn.parentNode.getAttribute('data-disabled') !== 'true') {
+                    this.active = btn;
+
+                    if (document.querySelector('iframe#frame')) {
+                        this.overlay.style.display = "flex";
+                        if (this.path !== btn.getAttribute('data-url')) {
+                            this.path = btn.getAttribute('data-url');
+                            this.player.loadVideoById({
+                                videoId: this.path
+                            });
+                        }
+                    } else {
+                        this.path = btn.getAttribute('data-url');
+                        console.log(this.path);
+                        this.createPlayer(this.path);
+                    }
                 }
             });
         });
+    }
+
+    onPlayerStateChange(state) { //state передается автоматически 
+        const blockedElem = this.active.parentNode.nextElementSibling;
+        const playBtn = this.active.querySelector('svg').cloneNode(true);
+
+        if (state.data === 0) {
+            if (blockedElem.querySelector('.play__circle').classList.contains('closed')) {
+                blockedElem.querySelector('.play__circle').classList.remove('closed');
+                blockedElem.querySelector('svg').remove();
+                blockedElem.querySelector('.play__circle').appendChild(playBtn);
+                blockedElem.querySelector('.play__text').textContent = 'play video';
+                blockedElem.querySelector('.play__text').classList.remove('attention');
+                blockedElem.style.opacity = 1;
+                blockedElem.style.filter = 'none';
+                blockedElem.setAttribute('data-disabled', 'false');
+            }
+        }
     }
 
     bindCloseBtn() {
@@ -31,65 +67,25 @@ export default class VideoPlayer {
             height: '100%',
             width: '100%',
             videoId: `${url}`,
+            events: {
+                'onStateChange': this.onPlayerStateChange
+            }
+
         });
 
         this.overlay.style.display = 'flex';
     }
 
     init() {
-        const tag = document.createElement('script'); // создаем тег script
+        if (this.btns.length > 0) {
+            const tag = document.createElement('script'); // создаем тег script
 
-        tag.src = "https://www.youtube.com/iframe_api"; // пушим ссылку на фрейм апи
-        const firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag); //вставляем в начало
+            tag.src = "https://www.youtube.com/iframe_api"; // пушим ссылку на фрейм апи
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag); //вставляем в начало
 
-        this.bindTriggers();
-        this.bindCloseBtn();
+            this.bindTriggers();
+            this.bindCloseBtn();
+        }
     }
 }
-
-
-
-/* 
- bindTriggers() {
-        this.btns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (document.querySelector('iframe#frame')) {
-                    this.overlay.style.display = "flex";
-                } else {
-                    const path = btn.getAttribute('data-url'); // берем ссылку из верстки кнопки
-
-                    this.createPlayer(path);
-                    console.log('hello');
-                }
-            });
-        });
-    }
-
-    bindCloseBtn() {
-        this.close.addEventListener('click', () => {
-            this.overlay.style.display = "none";
-            this.player.stopVideo();
-        });
-    }
-
-    createPlayer(url) {
-        this.player = new YT.Player('frame', { // YT подтягивается / 'frame' блок куда
-            height: '100%',
-            width: '100%',
-            videoId: `${url}`, // ID of Video from youtube
-        });
-
-        console.log(this.player);
-        this.overlay.style.display = "flex";
-    }
-
-    init() {
-        const tag = document.createElement('script'); // создаем переменную tag c тегом script
-
-        tag.src = "https://www.youtube.com/iframe_api"; // добавляем параметр src 
-        const firstScriptTag = document.getElementsByTagName('script')[0]; // находим первый скрипт
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag); // перед первым скриптом помещаем скрипт с АРІ
-        this.bindTriggers();
-        this.bindCloseBtn();
-*/
